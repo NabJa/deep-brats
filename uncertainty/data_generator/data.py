@@ -2,9 +2,16 @@ from pathlib import Path
 import pandas as pd
 import click
 
+DATA_PATH = Path("../../data")
+
+BRATS_IMAGES = Path(DATA_PATH/"BraTS2020_training_data")
+SURVIVAL_INFO = Path(DATA_PATH/"survival_info.csv")
+META_DATA = Path(DATA_PATH/"meta_data.csv")
+
+
 @click.command()
-@click.option("--survival_info_path", default="../../data/BraTS2020_training_data/survival_info.csv")
-@click.option("--meta_data_path", default="../../data/BraTS2020_training_data/meta_data.csv")
+@click.option("--survival_info_path", default=SURVIVAL_INFO)
+@click.option("--meta_data_path", default=META_DATA)
 def preprocess_kaggle_data(survival_info_path, meta_data_path):
 
     # Process survival info
@@ -28,7 +35,7 @@ class BratsData:
         self.val_path = val_path
         self.test_path = test_path
 
-    def get_volume(self, idx, meta_data, data_path="data/BraTS2020_training_data"):
+    def get_volume(self, idx, meta_data, data_path=BRATS_IMAGES):
 
         df = meta_data[meta_data.volume == idx]
 
