@@ -28,6 +28,17 @@ class BratsData:
         self.val_path = val_path
         self.test_path = test_path
 
+    def get_volume(self, idx, meta_data, data_path="data/BraTS2020_training_data"):
+
+        df = meta_data[meta_data.volume == idx]
+
+        for i, row in df.iterrows():
+            path = Path(data_path).joinpath(row.slice_path)
+            hf = h5py.File(path, 'r')
+            img = np.array(hf.get("image"))
+            mask = np.array(hf.get("mask"))s
+            yield {"image": img, "mask": mask, "slice": row.slice}
+
     
 if __name__ == '__main__':
     preprocess_kaggle_data()
