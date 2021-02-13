@@ -1,0 +1,33 @@
+from pathlib import Path
+import pandas as pd
+import click
+
+@click.command()
+@click.option("--survival_info_path", default="../../data/BraTS2020_training_data/survival_info.csv")
+@click.option("--meta_data_path", default="../../data/BraTS2020_training_data/meta_data.csv")
+def preprocess_kaggle_data(survival_info_path, meta_data_path):
+
+    # Process survival info
+
+    survival_info = pd.read_csv(Path(survival_info_path))
+    survival_info.loc[survival_info.Survival_days == "ALIVE (361 days later)", "Survival_days"] = 361
+    survival_info.Survival_days = survival_info.Survival_days.astype(int)
+    print(f"Saving processed survival info to {survival_info_path}")
+    survival_info.to_csv(survival_info_path)
+
+    # Process meta data
+    meta_data = pd.read_csv(Path(meta_data_path))
+    meta_data.slice_path = [Path(i).name for i in meta_data.slice_path]
+    print(f"Saving processed meta data to {meta_data_path}")
+    meta_data.to_csv(meta_data_path)
+
+
+class BratsData:
+    def __init__(self, train_path, val_path, test_path):
+        self.train_path = train_path
+        self.val_path = val_path
+        self.test_path = test_path
+
+    
+if __name__ == '__main__':
+    preprocess_kaggle_data()
