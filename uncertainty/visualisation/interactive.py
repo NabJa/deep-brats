@@ -6,9 +6,7 @@ def plot_volume_3d(volume):
     """Generate interactive 3D plot of volume with slider."""
 
     nslices, width, height = volume.shape
-    vmin, vmax = volume.min(), volume.max()
     base_mat = np.ones((height, width))
-    nframes = (nslices - 1) / 10
 
     def _frame_args(duration):
         return {
@@ -24,8 +22,8 @@ def plot_volume_3d(volume):
                 data=go.Surface(
                     z=(nslices - i) * base_mat,
                     surfacecolor=volume[nslices - (i + 1)],
-                    cmin=vmin,
-                    cmax=5,
+                    cmin=volume[nslices - (i + 1)].min(),
+                    cmax=volume[nslices - (i + 1)].max(),
                 ),
                 name=f"Frame {i}",
             )
@@ -39,8 +37,8 @@ def plot_volume_3d(volume):
             z=nslices * base_mat,
             surfacecolor=volume[nslices - 1],
             colorscale="Gray",
-            cmin=vmin,
-            cmax=5,
+            cmin=volume[nslices - 1].min(),
+            cmax=volume[nslices - 1].max(),
             colorbar=dict(thickness=20, ticklen=4),
         )
     )
